@@ -178,8 +178,6 @@ GConditionVar haveBundles; //will notify a thread that a bundle was loaded in th
                            //(or that no more bundles are coming)
 int bundleWork=1; // bit 0 set if bundles are still being prepared (BAM file not exhausted yet)
                   // bit 1 set if there are Bundles ready in the queue
-
-
 //GFastMutex waitMutex;
 GMutex waitMutex; // controls threadsWaiting (idle threads counter)
 
