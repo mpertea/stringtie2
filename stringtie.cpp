@@ -11,7 +11,7 @@
 #include "proc_mem.h"
 #endif
 
-#define VERSION "1.3.6"
+#define VERSION "2.0"
 
 //#define DEBUGPRINT 1
 
@@ -32,28 +32,31 @@
 #define USAGE "StringTie v" VERSION " usage:\n\
  stringtie <input.bam ..> [-G <guide_gff>] [-l <label>] [-o <out_gtf>] [-p <cpus>]\n\
   [-v] [-a <min_anchor_len>] [-m <min_tlen>] [-j <min_anchor_cov>] [-f <min_iso>]\n\
-  [-C <coverage_file_name>] [-c <min_bundle_cov>] [-g <bdist>] [-u]\n\
+  [-C <coverage_file_name>] [-c <min_bundle_cov>] [-g <bdist>] [-u] [-L]\n\
   [-e] [-x <seqid,..>] [-A <gene_abund.out>] [-h] {-B | -b <dir_path>} \n\
 Assemble RNA-Seq alignments into potential transcripts.\n\
  Options:\n\
  --version : print just the version at stdout and exit\n\
- -G reference annotation to use for guiding the assembly process (GTF/GFF3)\n\
+ --conservative : conservative transcriptome assembly, same as -t -c 1.5 -f 0.05\n\
  --rf assume stranded library fr-firststrand\n\
  --fr assume stranded library fr-secondstrand\n\
- -l name prefix for output transcripts (default: STRG)\n\
- -f minimum isoform fraction (default: 0.1)\n\
- -m minimum assembled transcript length (default: 200)\n\
+ -G reference annotation to use for guiding the assembly process (GTF/GFF3)\n\
  -o output path/file name for the assembled transcripts GTF (default: stdout)\n\
+ -l name prefix for output transcripts (default: STRG)\n\
+ -f minimum isoform fraction (default: 0.01)\n\
+ -L use long reads settings (default:false)\n\
+ -m minimum assembled transcript length (default: 200)\n\
  -a minimum anchor length for junctions (default: 10)\n\
  -j minimum junction coverage (default: 1)\n\
  -t disable trimming of predicted transcripts based on coverage\n\
     (default: coverage trimming is enabled)\n\
- -c minimum reads per bp coverage to consider for transcript assembly\n\
-    (default: 2.5)\n\
+ -c minimum reads per bp coverage to consider for multi-exon transcript\n\
+    (default: 1)\n\
+ -s minimum reads per bp coverage to consider for single-exon transcript\n\
+    (default: 4.75)\n\
  -v verbose (log bundle processing details)\n\
- -g gap between read mappings triggering a new bundle (default: 50)\n\
- -C output a file with reference transcripts that are covered by reads\n\
- -M fraction of bundle allowed to be covered by multi-hit reads (default: 1.0)\n\
+ -g maximum gap allowed between read mappings (default: 50)\n\
+ -M fraction of bundle allowed to be covered by multi-hit reads (default:1)\n\
  -p number of threads (CPUs) to use (default: 1)\n\
  -A gene abundance estimation output file\n\
  -B enable output of Ballgown table files which will be created in the\n\
@@ -87,8 +90,30 @@ the following options are available:\n\
                    these are not kept unless there is strong evidence for them\n\
   -l <label>       name prefix for output transcripts (default: MSTRG)\n\
 "
+/* 
+ -C output a file with reference transcripts that are covered by reads\n\
+ -U unitigs are treated as reads and not as guides \n\ \\ not used now
+ -d disable adaptive read coverage mode (default: yes)\n\
+ -n sensitivity level: 0,1, or 2, 3, with 3 the most sensitive level (default 1)\n\ \\ deprecated for now
+ -O disable the coverage saturation limit and use a slower two-pass approach\n\
+    to process the input alignments, collapsing redundant reads\n\
+  -i the reference annotation contains partial transcripts\n\
+ -w weight the maximum flow algorithm towards the transcript with higher rate (abundance); default: no\n\
+ -y include EM algorithm in max flow estimation; default: no\n\
+ -z don't include source in the max flow algorithm\n\
+ -P output file with all transcripts in reference that are partially covered by reads
+ -M fraction of bundle allowed to be covered by multi-hit reads (paper uses default: 1)\n\
+ -c minimum bundle reads per bp coverage to consider for assembly (paper uses default: 3)\n\
+ -S more sensitive run (default: no) disabled for now \n\
+ -s coverage saturation threshold; further read alignments will be\n\ // this coverage saturation parameter is deprecated starting at version 1.0.5
+    ignored in a region where a local coverage depth of <maxcov> \n\
+    is reached (default: 1,000,000);\n\ \\ deprecated
+ -e (mergeMode)  include estimated coverage information in the preidcted transcript\n\
+ -E (mergeMode)   enable the name of the input transcripts to be included\n\
+                  in the merge output (default: no)\n\
+*/
+//---- globals
 
-//---- globals ----
 FILE* f_out=NULL;
 FILE* c_out=NULL;
 //#define B_DEBUG 1
@@ -103,8 +128,8 @@ GStr tmpfname;
 GStr genefname;
 bool guided=false;
 bool trim=true;
-bool fast=true;
 bool eonly=false; // parameter -e ; for mergeMode includes estimated coverage sum in the merged transcripts
+bool longreads=false;
 bool nomulti=false;
 bool enableNames=false;
 bool includecov=false;
@@ -119,9 +144,13 @@ int mintranscriptlen=200; // minimum length for a transcript to be printed
 //int sensitivitylevel=1;
 uint junctionsupport=10; // anchor length for junction to be considered well supported <- consider shorter??
 int junctionthr=1; // number of reads needed to support a particular junction
-float readthr=2.5;     // read coverage per bundle bp to accept it; otherwise considered noise; paper uses 3
+float readthr=1;     // read coverage per bundle bp to accept it; // paper uses 3
+float singlethr=4.75;
 uint bundledist=50;  // reads at what distance should be considered part of separate bundles
-float mcov=1.0; // fraction of bundle allowed to be covered by multi-hit reads; paper used 1
+uint runoffdist=200;
+float mcov=1; // fraction of bundle allowed to be covered by multi-hit reads paper uses 1
+int allowed_nodes=1000;
+//bool adaptive=true; // adaptive read coverage -> depends on the overall gene coverage
 
 int no_xs=0; // number of records without the xs tag
 
@@ -133,7 +162,8 @@ bool includesource=true;
 //bool EM=false;
 //bool weight=false;
 
-float isofrac=0.1;
+float isofrac=0.01;
+bool isunitig=true;
 GStr label("STRG");
 GStr ballgown_dir;
 
@@ -232,8 +262,7 @@ int main(int argc, char* argv[]) {
 
  // == Process arguments.
  GArgs args(argc, argv,
-   //"debug;help;fast;xhvntj:D:G:C:l:m:o:a:j:c:f:p:g:");
-   "debug;help;version;keeptmp;bam;fr;rf;merge;exclude=zZSEihvteux:n:j:s:D:G:C:l:m:o:a:j:c:f:p:g:P:M:Bb:A:F:T:");
+   "debug;help;version;conservative;keeptmp;bam;fr;rf;merge;exclude=zSEihvteuLx:n:j:s:D:G:C:l:m:o:a:j:c:f:p:g:P:M:Bb:A:F:T:");
  args.printError(USAGE, true);
 
  processOptions(args);
@@ -439,11 +468,14 @@ if (tstackSize<DEF_TSTACK_SIZE) defStackSize=DEF_TSTACK_SIZE;
 				 else xstrand='-';
 			 }
 		 }
+
+		 /*
 		 if (xstrand=='.' && brec->exons.Count()>1) {
 			 no_xs++;
-			 //continue; //skip spliced alignments lacking XS tag (e.g. HISAT alignments) ?
-			 //this is changed in StringTie 2 !
+			 continue; //skip spliced alignments lacking XS tag (e.g. HISAT alignments)
 		 }
+		 // I might still infer strand later */
+
 		 if (refseqName==NULL) GError("Error: cannot retrieve target seq name from BAM record!\n");
 		 pos=brec->start; //BAM is 0 based, but GBamRecord makes it 1-based
 		 chr_changed=(lastref.is_empty() || lastref!=refseqName);
@@ -462,12 +494,10 @@ if (tstackSize<DEF_TSTACK_SIZE) defStackSize=DEF_TSTACK_SIZE;
 			 if (alncounts.Count()<=gseq_id) {
 				 alncounts.Resize(gseq_id+1, 0);
 			 }
-			 else if (alncounts[gseq_id]>0)
-				 GError(ERR_BAM_SORT);
+			 else if (alncounts[gseq_id]>0) GError(ERR_BAM_SORT);
 			 prev_pos=0;
 		 }
-		 if (pos<prev_pos)
-			 GError(ERR_BAM_SORT);
+		 if (pos<prev_pos) GError(ERR_BAM_SORT);
 		 prev_pos=pos;
 		 if (skipGseq) continue;
 		 alncounts[gseq_id]++;
@@ -490,7 +520,7 @@ if (tstackSize<DEF_TSTACK_SIZE) defStackSize=DEF_TSTACK_SIZE;
 		    }
 		 }
 
-		 if (!chr_changed && currentend>0 && pos>currentend+(int)bundledist) {
+		 if (!chr_changed && currentend>0 && pos>currentend+(int)runoffdist) {
 			 new_bundle=true;
 		 }
 	 }
@@ -509,7 +539,7 @@ if (tstackSize<DEF_TSTACK_SIZE) defStackSize=DEF_TSTACK_SIZE;
 			//push this in the bundle queue where it'll be picked up by the threads
 			DBGPRINT2("##> Locking queueMutex to push loaded bundle into the queue (bundle.start=%d)\n", bundle->start);
 			int qCount=0;
-			queueMutex.lock(); // FIXME: possible point of contention here between multiple threads
+			queueMutex.lock();
 			bundleQueue.Push(bundle);
 			bundleWork |= 0x02; //set bit 1
 			qCount=bundleQueue.Count();
@@ -660,18 +690,19 @@ if (tstackSize<DEF_TSTACK_SIZE) defStackSize=DEF_TSTACK_SIZE;
 				 }
 			 } while (cend_changed);
 		 }
-	 } //adjusted currentend ; selected overlapping reference transcripts
+	 } //adjusted currentend and checked for overlapping reference transcripts
 	 GReadAlnData alndata(brec, 0, nh, hi, tinfo);
      bool ovlpguide=bundle->evalReadAln(alndata, xstrand);
-	 //overlaps with ref transcripts may set xstrand if needed
-     if (!eonly || ovlpguide) {
-    	 // in -e mode: a read alignment is discarded if it doesn't overlap a reference transcript!
+     if(!eonly || ovlpguide) { // in eonly case consider read only if it overlaps guide
+    	 //check for overlaps with ref transcripts which may set xstrand
     	 if (xstrand=='+') alndata.strand=1;
     	 else if (xstrand=='-') alndata.strand=-1;
-    	 //this is changed in StringTie 2 ! (improved transcription strand guessing)
-    	 bool XSmissing=(alndata.strand==0 && brec->exons.Count()>1);
-    	 if (!XSmissing)
+    	 //GMessage("%s\t%c\t%d\thi=%d\n",brec->name(), xstrand, alndata.strand,hi);
+    	 //countFragment(*bundle, *brec, hi,nh); // we count this in build_graphs to only include mapped fragments that we consider correctly mapped
+    	 //fprintf(stderr,"fragno=%d fraglen=%lu\n",bundle->num_fragments,bundle->frag_len);if(bundle->num_fragments==100) exit(0);
+    	 //if (!ballgown || ref_overlap)
     	   processRead(currentstart, currentend, *bundle, hashread, alndata);
+			  // *brec, strand, nh, hi);
      }
  } //for each read alignment
 
@@ -841,6 +872,25 @@ void processOptions(GArgs& args) {
 	   fprintf(stdout,"%s\n",VERSION);
 	   exit(0);
 	}
+
+	 longreads=(args.getOpt('L')!=NULL);
+	 if(longreads) {
+		 bundledist=0;
+		 singlethr=1.5;
+	 }
+
+
+	if (args.getOpt("conservative")) {
+	  isofrac=0.05;
+	  singlethr=4.75;
+	  readthr=1.5;
+	  trim=false;
+	}
+
+	if (args.getOpt('t')) {
+		trim=false;
+	}
+
 	if (args.getOpt("fr")) {
 		fr_strand=true;
 	}
@@ -853,14 +903,14 @@ void processOptions(GArgs& args) {
 	 forceBAM=(args.getOpt("bam")!=NULL); //assume the stdin stream is BAM instead of text SAM
 	 mergeMode=(args.getOpt("merge")!=NULL);
 	 keepTempFiles=(args.getOpt("keeptmp")!=NULL);
-	 fast=!(args.getOpt('Z')!=NULL);
+	 //adaptive=!(args.getOpt('d')!=NULL);
 	 verbose=(args.getOpt('v')!=NULL);
 	 if (verbose) {
 	     fprintf(stderr, "Running StringTie " VERSION ". Command line:\n");
 	     args.printCmdLine(stderr);
 	 }
 	 //complete=!(args.getOpt('i')!=NULL);
-	 trim=!(args.getOpt('t')!=NULL);
+	 // trim=!(args.getOpt('t')!=NULL);
 	 includesource=!(args.getOpt('z')!=NULL);
 	 //EM=(args.getOpt('y')!=NULL);
 	 //weight=(args.getOpt('w')!=NULL);
@@ -902,14 +952,13 @@ void processOptions(GArgs& args) {
 	 }
 	*/
 
-	 s=args.getOpt('g');
-	 if (!s.is_empty()) bundledist=s.asInt();
-	 else if(mergeMode) bundledist=250; // should figure out here a reasonable parameter for merge
+
 	 s=args.getOpt('p');
 	 if (!s.is_empty()) {
 		   num_cpus=s.asInt();
 		   if (num_cpus<=0) num_cpus=1;
 	 }
+
 	 s=args.getOpt('a');
 	 if (!s.is_empty()) {
 		 junctionsupport=(uint)s.asInt();
@@ -926,6 +975,15 @@ void processOptions(GArgs& args) {
 		 }
 	 }
 	 else if(mergeMode) readthr=0;
+
+
+
+	 s=args.getOpt('g');
+	 if (!s.is_empty()) {
+		 bundledist=s.asInt();
+		 if(bundledist>runoffdist) runoffdist=bundledist;
+	 }
+	 else if(mergeMode) bundledist=250; // should figure out here a reasonable parameter for merge
 
 	 s=args.getOpt('F');
 	 if (!s.is_empty()) {
@@ -971,14 +1029,10 @@ void processOptions(GArgs& args) {
 	 // coverage saturation no longer used after version 1.0.4; left here for compatibility with previous versions
 	 s=args.getOpt('s');
 	 if (!s.is_empty()) {
-		 GMessage("Coverage saturation parameter is deprecated starting at version 1.0.5");
-		 /*
-		 int r=s.asInt();
-		 if (r<2) {
-			 GMessage("Warning: invalid -s value, setting coverage saturation threshold, using default (%d)\n", maxReadCov);
+		 singlethr=(float)s.asDouble();
+		 if (readthr<0.001 && !mergeMode) {
+			 GError("Error: invalid -s value, must be >=0.001)\n");
 		 }
-		 else maxReadCov=r;
-		 */
 	 }
 
 	 if (args.getOpt('G')) {
@@ -994,6 +1048,8 @@ void processOptions(GArgs& args) {
 	 retained_intron=(args.getOpt('i')!=NULL);
 
 	 nomulti=(args.getOpt('u')!=NULL);
+
+	 //isunitig=(args.getOpt('U')!=NULL);
 
 	 eonly=(args.getOpt('e')!=NULL);
 	 if(eonly && mergeMode) {
@@ -1221,7 +1277,7 @@ void processBundle(BundleData* bundle) {
 
 	}
 #endif
-	int ngenes=infer_transcripts(bundle);
+	infer_transcripts(bundle);
 
 	if (ballgown && bundle->rc_data) {
 		rc_update_exons(*(bundle->rc_data));
@@ -1231,7 +1287,7 @@ void processBundle(BundleData* bundle) {
 		GLockGuard<GFastMutex> lock(printMutex);
 #endif
 		if(mergeMode) GeneNo=printMergeResults(bundle, GeneNo,bundle->refseq);
-		else GeneNo=printResults(bundle, ngenes, GeneNo, bundle->refseq);
+		else GeneNo=printResults(bundle, GeneNo, bundle->refseq);
 	}
 
 	if (bundle->num_fragments) {
@@ -1289,8 +1345,7 @@ void workerThread(GThreadData& td) {
 	//wait for a ready bundle in the queue, until there is no hope for incoming bundles
 	DBGPRINT2("---->> Thread%d starting..\n",td.thread->get_id());
 	DBGPRINT2("---->> Thread%d locking queueMutex..\n",td.thread->get_id());
-	queueMutex.lock(); //FIXME: possible point of contention
-	//enter wait-for-notification loop
+	queueMutex.lock(); //enter wait-for-notification loop
 	while (bundleWork) {
 		DBGPRINT3("---->> Thread%d: waiting.. (queue len=%d)\n",td.thread->get_id(), bundleQueue->Count());
 		waitMutex.lock();
