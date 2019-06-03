@@ -202,7 +202,7 @@ bool ReadIO::skip_fastq(std::ifstream &in) {
     std::string s;
 
     for (unsigned int i = 0; i < 4; i++) 
-        not_eof = getline(in, s);
+        not_eof = (bool)getline(in, s);
     
     return not_eof;
 }

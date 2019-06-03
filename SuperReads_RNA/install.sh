@@ -17,7 +17,8 @@ export NUM_THREADS=`grep -c '^processor' /proc/cpuinfo 2>/dev/null || sysctl -n 
 BINDIR=$DEST/bin
 LIBDIR=$DEST/lib
 export PKG_CONFIG_PATH=$LIBDIR/pkgconfig:$PKG_CONFIG_PATH
-(cd global-1 && ./configure --prefix=$DEST --bindir=$BINDIR --libdir=$LIBDIR && make -j $NUM_THREADS install-special)
+(cd global-1 && autoreconf -f -i && \
+ ./configure --prefix=$DEST --bindir=$BINDIR --libdir=$LIBDIR && make -j $NUM_THREADS install-special)
 
 echo "creating sr_config_example.txt with correct PATHS"
 $BINDIR/createSuperReads_RNA -g sr_config_example.txt
