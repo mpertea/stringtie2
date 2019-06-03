@@ -29,7 +29,7 @@ was completed):
  ./install.sh
 ```
 
-### Using the super-reads with Stringtie
+### Using super-reads with Stringtie
 
 (under construction)
 

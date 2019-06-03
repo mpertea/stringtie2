@@ -23,9 +23,10 @@ Example:
 
 Final super-read + short read alignments can be found in `out_dir/sr_merge.bam`
 
-Use "-U" instead of "-1/-2" if reads unpaired.
+Use "-U" instead of "-1/-2" if using unpaired reads.
 
-If super-reads already assembled by MaSuRCA, can specify location of the "work1" directory using "-w" option.
+If super-reads are already assembled by MaSuRCA, the user can specify the location of 
+the "work1" directory using "-w" option.
 
 Full usage:
 ```
