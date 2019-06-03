@@ -4,8 +4,8 @@ In order to build StringTie from this GitHub repository
 the following steps can be taken:
  
 ```
-git clone https://github.com/gpertea/stringtie
-cd stringtie
+git clone https://github.com/mpertea/stringtie2
+cd stringtie2
 make release
 ```
 
@@ -13,6 +13,25 @@ Note that simply running `make` will produce an executable
 which is more suitable for debugging and runtime checking but which can be
 significantly slower than the optimized version which is obtained by using 
 `make release`.
+
+
+### Installation of the super-reads module
+
+This optional module can be used to de-novo assemble, align and pre-process
+RNA-Seq reads, preparing them to be used as "super-reads" by Stringtie.
+
+Mode detailed information is provided in the SuperReads_RNA/README.md 
+Quick installation instructions for this module (assuming the above Stringtie installation 
+was completed):
+
+```
+ cd SuperReads_RNA
+ ./install.sh
+```
+
+### Using the super-reads with Stringtie
+
+(under construction)
 
 ## Running StringTie
 
