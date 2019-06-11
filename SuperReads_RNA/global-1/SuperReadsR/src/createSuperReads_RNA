@@ -305,22 +305,7 @@ print FILE "\n";
   print FILE "if [[ ! -e work1/superReads.success ]];then\n";
   print FILE "fail Super reads failed, check super1.err and files in ./work1/\n";
   print FILE "fi\n";
-  #print FILE "log 'All done, the super reads are in work1/superReadSequences.fasta'\n";
-
-print FILE "log Superreads generated, calculating weights.\n";
-
-###super-read quantification###
-print FILE "assign_reads -p $config{NUM_THREADS} "; # -o outdir, -p threads ?
-for my $ref (@{$config{PE_INFO}}) {
-    print FILE " \"${$ref}[0] ${$ref}[3]";
-    if (${$ref}[3] ne ${$ref}[4]) {
-        print FILE " ${$ref}[4]";
-    }
-    print FILE "\"";
-}
-print FILE "\n";
-
-
+  print FILE "log 'All done, the super reads are in work1/superReadSequences.fasta'\n";
 
 script_done
 
