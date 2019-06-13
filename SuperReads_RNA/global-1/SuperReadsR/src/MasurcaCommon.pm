@@ -53,9 +53,9 @@ sub estimate_optimal_kmer{
 
 sub get_MIN_Q_CHAR{
   my ($out, $filelist) = @_;
-
+  my @fns=split(/\s+/, $filelist);
   print $out <<"EOS";
-MIN_Q_CHAR=`cat $filelist |head -n 50000 | awk 'BEGIN{flag=0}{if(\$0 ~ /^\\+/){flag=1}else if(flag==1){print \$0;flag=0}}'  | perl -ne 'BEGIN{\$q0_char=\"\@\";}{chomp;\@f=split \"\";foreach \$v(\@f){if(ord(\$v)<ord(\$q0_char)){\$q0_char=\$v;}}}END{\$ans=ord(\$q0_char);if(\$ans<64){print \"33\\n\"}else{print \"64\\n\"}}'`
+MIN_Q_CHAR=`head -n 50000 $fns[0] | awk 'BEGIN{flag=0}{if(\$0 ~ /^\\+/){flag=1}else if(flag==1){print \$0;flag=0}}'  | perl -ne 'BEGIN{\$q0_char=\"\@\";}{chomp;\@f=split \"\";foreach \$v(\@f){if(ord(\$v)<ord(\$q0_char)){\$q0_char=\$v;}}}END{\$ans=ord(\$q0_char);if(\$ans<64){print \"33\\n\"}else{print \"64\\n\"}}'`
 save MIN_Q_CHAR
 echo MIN_Q_CHAR: \$MIN_Q_CHAR
 EOS

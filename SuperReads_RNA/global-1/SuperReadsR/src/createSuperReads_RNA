@@ -214,9 +214,8 @@ print FILE "export PERL5LIB=", $RealBin . "/" . MasurcaPaths::rel_ext_bin, "\${P
 print FILE "save PERL5LIB\n";
 print FILE "NUM_THREADS=$config{NUM_THREADS}\n";
 print FILE "save NUM_THREADS\n";
+
 ###renaming reads###
-
-
 
 @pe_files        = MasurcaCommon::rename_reads(*FILE, "pe", @{$config{PE_INFO}});
 print FILE "run_wait\n";

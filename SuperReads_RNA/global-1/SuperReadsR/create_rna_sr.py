@@ -6,7 +6,8 @@ import sys
 import re
 import os
 
-SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
+#SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
+BIN_DIR = #__#
 WORKING_DIR = os.getcwd()
 
 CONF_TEMPLATE = """DATA
@@ -36,8 +37,8 @@ if __name__ == "__main__":
     parser.add_argument("--hisat2-cmd", required=False, type=str, default="hisat2", help="HISAT2 executable")
     args = parser.parse_args()
 
-    if not os.path.isdir(os.path.join(SCRIPT_DIR, "bin")):
-        sys.stderr.write("Error: bin/ directory not found. Please run './install.sh''\n")
+    if not os.path.isdir(BIN_DIR):
+        sys.stderr.write("Error: programs directory not found. Please run './install.sh''\n")
         sys.exit(1)
     
     if args.short_unpaired != None:
@@ -61,7 +62,7 @@ if __name__ == "__main__":
         conf_file = open("super_reads.conf", "w")
         conf_file.write(conf_str)
         conf_file.close()
-        subprocess.call([os.path.join(SCRIPT_DIR, "bin/createSuperReads_RNA"), "super_reads.conf"])
+        subprocess.call([os.path.join(BIN_DIR, "createSuperReads_RNA"), "super_reads.conf"])
         subprocess.call("./assemble.sh")
 
         os.chdir(WORKING_DIR)
@@ -84,7 +85,7 @@ if __name__ == "__main__":
     subprocess.call(gmap_call, stdout=gmap_out)
     gmap_out.close()
 
-    cmd = [os.path.join(SCRIPT_DIR, "bin/assign_reads"), 
+    cmd = [os.path.join(BIN_DIR, "assign_reads"), 
                      "-p", str(args.num_threads),
                      "-w", work1_dir,
                      "-s", gmap_out_name,
