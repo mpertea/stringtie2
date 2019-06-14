@@ -53,6 +53,12 @@ if __name__ == "__main__":
 
 
     if args.work_dir == None:
+        if not os.path.exists(args.out_dir):
+            try:
+              os.makedirs(args.out_dir)
+            except OSError, e:
+              sys.stderr.write("\nError creating directory %s (%s)" % (args.out_dir, e));
+              sys.exit(1)
         os.chdir(args.out_dir)
         conf_str = CONF_TEMPLATE % (
             args.frag_len, 
