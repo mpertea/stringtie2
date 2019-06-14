@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -xe
+set -e
 
 ROOT=`pwd -P`
 [ -z "$DEST" ] && DEST="$ROOT"
