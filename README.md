@@ -9,32 +9,15 @@ cd stringtie2
 make release
 ```
 
-Note that simply running `make` will produce an executable 
-which is more suitable for debugging and runtime checking but which can be
-significantly slower than the optimized version which is obtained by using 
-`make release`.
+If the compilation is successful, the resulting `stringtie` binary can then be copied to 
+a programs directory of choice.
 
+Installation of StringTie this way should take less than a minute on a regular Linux or Apple MacOS 
+desktop.
 
-### Installation of the super-reads module (optional)
-
-This optional module can be used to de-novo assemble, align and pre-process
-RNA-Seq reads, preparing them to be used as "super-reads" by Stringtie.
-
-Mode detailed information is provided in the SuperReads_RNA/README.md 
-Quick installation instructions for this module (assuming the above Stringtie installation 
-was completed):
-
-```
- cd SuperReads_RNA
- ./install.sh
-```
-
-#### Using super-reads with Stringtie
-
-After running the super-reads module (see the SuperRead_RNA/README.md file for usage details), there 
-is a BAM file which contains sorted alignment for both short reads and super-reads, called *`sr_merge.bam`*, 
-created in the selected output directory. This file can be directly given as the main input file
-to StringTie as described in the _Running Stringtie_ section below.
+Note that simply running `make` will produce an executable which is more suitable for debugging 
+and runtime checking but which can be significantly slower than the optimized version which 
+is obtained by using `make release` as instructed above.
 
 ## Running StringTie
 
@@ -45,6 +28,43 @@ stringtie [options] <aligned_reads.bam>
 The main input of the program is a SAMTools BAM file with RNA-Seq mappings
 sorted by genomic location (for example the accepted_hits.bam file produced
 by TopHat).
+
+### Running StringTie on test data
+After building the program with `make release` as instructed above, the current binary
+can be tested on a small data set with a command like this:
+```
+make test
+```
+This will run the included `run_tests.sh` script which downloads a small test data set 
+and runs a few simple tests to ensure that the program works as expected. The tests
+can also be run manually like this:
+```
+cd test_data
+
+```
+#### Run 1: Input consists of only alignments of short reads
+```
+stringtie -o short_reads.out.gtf short_reads.bam
+```
+
+#### Run 2: Input consists of alignments of short reads and superreads
+```
+stringtie -o short_reads_and_superreads.out.gtf short_reads_and_superreads.bam
+```
+    
+#### Run 3: Input consists of alignments of long reads
+```
+stringtie -L -o long_reads.out.gtf long_reads.bam
+```
+    
+#### Run 4: Input consists of alignments of long reads and reference annotation (guides)
+```
+stringtie -L -G human-chr19_P.gff -o long_reads_guided.out.gtf long_reads.bam
+```
+
+The above runs should take around one second each on a regular desktop.
+
+### StringTie options
 
 The following optional parameters can be specified (use -h/--help to get the
 usage message):
@@ -134,3 +154,27 @@ _`reference_id`_ GTF attribute in the output file . Other transcripts assembled 
 the input alignment data by StringTie and not present in the reference file will be 
 printed as well ("novel" transcripts).
 
+## Installation of the super-reads module (optional)
+
+This optional module can be used to de-novo assemble, align and pre-process
+RNA-Seq reads, preparing them to be used as "super-reads" by Stringtie.
+
+Mode detailed information is provided in the SuperReads_RNA/README.md 
+Quick installation instructions for this module (assuming the above Stringtie installation 
+was completed):
+
+```
+ cd SuperReads_RNA
+ ./install.sh
+```
+
+### Using super-reads with Stringtie
+
+After running the super-reads module (see the SuperRead_RNA/README.md file for usage details), there 
+is a BAM file which contains sorted alignment for both short reads and super-reads, called *`sr_merge.bam`*, 
+created in the selected output directory. This file can be directly given as the main input file
+to StringTie as described in the _Running Stringtie_ section above.
+
+
+## License
+StringTie is free, open source software released under an <a href="https://opensource.org/licenses/MIT">MIT License</a>.
