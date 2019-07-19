@@ -7,6 +7,7 @@ function unpack_test_data() {
     exit 1
   fi
   echo "..unpacking test data.."
+  echo
   tar -xzf $t
   if [ ! -f test_data/human-chr19_P.gff ]; then
      echo "Error: invalid test data archive?"
@@ -19,10 +20,9 @@ if [ ! -f test_data/human-chr19_P.gff ]; then
     #extract the tarball and rename the directory
     unpack_test_data
   else
-    echo "Downloading test data.."
-    #use curl to fetch the tarball attached to a specific github release or branch
-    #and unpack it here
-    #curl -LJO ...
+    echo "..Downloading test data.."
+    #use curl to fetch the tarball from a specific github release or branch
+    curl -sLJO https://github.com/mpertea/stringtie2/raw/test_data/test_data.tar.gz
     unpack_test_data
   fi
 fi
