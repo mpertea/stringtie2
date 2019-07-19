@@ -15,7 +15,7 @@ significantly slower than the optimized version which is obtained by using
 `make release`.
 
 
-### Installation of the super-reads module
+### Installation of the super-reads module (optional)
 
 This optional module can be used to de-novo assemble, align and pre-process
 RNA-Seq reads, preparing them to be used as "super-reads" by Stringtie.
@@ -29,9 +29,12 @@ was completed):
  ./install.sh
 ```
 
-### Using super-reads with Stringtie
+#### Using super-reads with Stringtie
 
-(under construction)
+After running the super-reads module (see the SuperRead_RNA/README.md file for usage details), there 
+is a BAM file which contains sorted alignment for both short reads and super-reads, called *`sr_merge.bam`*, 
+created in the selected output directory. This file can be directly given as the main input file
+to StringTie as described in the _Running Stringtie_ section below.
 
 ## Running StringTie
 
