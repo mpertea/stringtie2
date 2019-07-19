@@ -9,9 +9,9 @@ precomputed, expected output for each case. If the output of each test matches t
 expected output, the test is considered successful (and "OK." will be shown on the next line), 
 otherwise an error will be reported.
 
-## Running StringTie on the test data
+## Running StringTie on the test data separately
 
-The command lines shown below assume that the _stringtie_ program is installed somewhere in the shell PATH. If that is not the case, the `stringtie` comand below should be prepended with the full path to the _stringtie_ executable.
+The command lines shown below assume that the _stringtie_ program is installed somewhere in the shell's PATH. If that is not the case, the `stringtie` comand below should be prepended with the directory path to the _stringtie_ executable
 
 ### Test 1: Input consists of only alignments of short reads
 
