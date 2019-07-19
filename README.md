@@ -39,9 +39,9 @@ to StringTie as described in the _Running Stringtie_ section below.
 ## Running StringTie
 
 Run stringtie from the command line like this:
-'''
+```
 stringtie [options] <aligned_reads.bam>
-'''
+```
 The main input of the program is a SAMTools BAM file with RNA-Seq mappings
 sorted by genomic location (for example the accepted_hits.bam file produced
 by TopHat).
@@ -106,7 +106,6 @@ the following options are available:
 
 ## Input files
 
-
 StringTie takes as input a binary SAM (BAM) file sorted by reference position. 
 This file contains spliced read alignments such as the ones produced by TopHat or HISAT2.
 A text file in SAM format should be converted to BAM and sorted using the 
@@ -125,10 +124,13 @@ records. For example HISAT2 should be run with the `--dta` option in order to ta
 alignments this way. As explained above, the alignments in SAM format should be sorted and
 preferrably converted to BAM.
 
-Optionally, a reference annotation file in GTF/GFF3 format can be provided to StringTie. 
-In this case, StringTie will check to see if the reference transcripts are expressed in the 
-RNA-Seq data, and for the ones that are expressed it will compute coverage and FPKM values.
-Note that the reference transcripts need to be fully covered by reads in order to be included
-in StringTie's output. Other transcripts assembled from the data by StringTie and not present
-in the reference file will be printed as well ("novel" transcripts).
+Optionally, a reference annotation file in GTF/GFF3 format can be provided to StringTie 
+using the `-G` option. In this case, StringTie will check to see if the reference transcripts 
+are expressed in the RNA-Seq data, and for the ones that are expressed it will compute coverage
+and FPKM values.
+Note that the reference transcripts should be fully covered by reads in order to be included
+in StringTie's output with the original ID of the reference transcript shown in the 
+_`reference_id`_ GTF attribute in the output file . Other transcripts assembled from 
+the input alignment data by StringTie and not present in the reference file will be 
+printed as well ("novel" transcripts).
 
