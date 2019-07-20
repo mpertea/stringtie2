@@ -52,7 +52,7 @@ cd stringtie-2.0.Linux_x86_64
 ./run_tests.sh
 ```
 
-These small test/demo data sets can also be downloaded separately as <a href="https://github.com/mpertea/stringtie2/releases/download/v2.0/test_data.tar.gz>test_data.tar.gz</a> along with the source package and pre-compiled packages on the <a href="https://github.com/mpertea/stringtie2/releases">Releases</a> page for this repository.
+These small test/demo data sets can also be downloaded separately as <a href="https://github.com/mpertea/stringtie2/releases/download/v2.0/test_data.tar.gz">test_data.tar.gz</a> along with the source package and pre-compiled packages on the <a href="https://github.com/mpertea/stringtie2/releases">Releases</a> page for this repository.
 
 The tests can also be run manually as shown below (after changing to the _test_data_ directory, `cd test_data`):
 
@@ -79,7 +79,7 @@ stringtie -L -G human-chr19_P.gff -o long_reads_guided.out.gtf long_reads.bam
 The above runs should take around one second each on a regular Linux or MacOS desktop. 
 (see also <a href="https://github.com/mpertea/stringtie2/blob/master/test_data/README.md">test_data/README.md</a> info).
 
-For very large data sets one can expect up to one hour of processing time. A minimum of 8GB of RAM is recommended for running StringTie on regular size RNA-Seq samples, with 16 GB or more being required for larger data sets.
+For very large data sets one can expect up to one hour of processing time. A minimum of 8GB of RAM is recommended for running StringTie on regular size RNA-Seq samples, with 16 GB or more being strongly advised for larger data sets.
 
 
 ### StringTie options
