@@ -36,12 +36,9 @@ can be tested on a small data set with a command like this:
 make test
 ```
 This will run the included `run_tests.sh` script which downloads a small test data set 
-and runs a few simple tests to ensure that the program works as expected. The tests
-can also be run manually like this:
-```
-cd test_data
+and runs a few simple tests to ensure that the program works as expected. 
+The tests can also be run manually as shown below (after changing to the _test_data_ directory, `cd test_data`):
 
-```
 #### Run 1: Input consists of only alignments of short reads
 ```
 stringtie -o short_reads.out.gtf short_reads.bam
@@ -62,7 +59,8 @@ stringtie -L -o long_reads.out.gtf long_reads.bam
 stringtie -L -G human-chr19_P.gff -o long_reads_guided.out.gtf long_reads.bam
 ```
 
-The above runs should take around one second each on a regular desktop.
+The above runs should take around one second each on a regular Linux or MacOS desktop. 
+(see also <a href="https://github.com/mpertea/stringtie2/blob/master/test_data/README.md">test data</a> info).
 
 ### StringTie options
 
