@@ -1,7 +1,9 @@
 ## Obtaining and installing StringTie
 
-In order to build StringTie from this GitHub repository
-the following steps can be taken:
+Source and binary packages for the program, along with a small test data set can be directly downloaded from the <a href="https://github.com/mpertea/stringtie2/releases">Releases</a> page for this repository/
+
+### Building the latest version from the repository 
+In order to build StringTie from the source made available in this GitHub repository the following steps can be taken:
  
 ```
 git clone https://github.com/mpertea/stringtie2
@@ -15,9 +17,12 @@ a programs directory of choice.
 Installation of StringTie this way should take less than a minute on a regular Linux or Apple MacOS 
 desktop.
 
-Note that simply running `make` will produce an executable which is more suitable for debugging 
+Note that simply running `make` would produce an executable which is more suitable for debugging 
 and runtime checking but which can be significantly slower than the optimized version which 
 is obtained by using `make release` as instructed above.
+
+### Using precompiled (binary) releases
+Instead of compiling from source, some users may prefer to download already compiled release for Linux and Apple OS X. These binary packages are compiled on older versions of these operating systems (RedHat Enterprise Linux 5.0 and OS X 10.7) in order to provide compatibility with a wide range of OS versions. These precompiled packages are made available on the <a href="https://github.com/mpertea/stringtie2/releases">Releases</a> page for this repository.
 
 ## Running StringTie
 
@@ -37,6 +42,9 @@ make test
 ```
 This will run the included `run_tests.sh` script which downloads a small test data set 
 and runs a few simple tests to ensure that the program works as expected. 
+
+These test/demo data sets can also be downloaded as <a href="https://github.com/mpertea/stringtie2/releases/download/v2.0/test_data.tar.gz>test_data.tar.gz</a> along with the source package and precompiled packages on the <a href="https://github.com/mpertea/stringtie2/releases">Releases</a> page for this repository.
+
 The tests can also be run manually as shown below (after changing to the _test_data_ directory, `cd test_data`):
 
 #### Run 1: Input consists of only alignments of short reads
