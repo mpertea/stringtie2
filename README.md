@@ -21,8 +21,8 @@ Note that simply running `make` would produce an executable which is more suitab
 and runtime checking but which can be significantly slower than the optimized version which 
 is obtained by using `make release` as instructed above.
 
-### Using precompiled (binary) releases
-Instead of compiling from source, some users may prefer to download already compiled release for Linux and Apple OS X. These binary packages are compiled on older versions of these operating systems (RedHat Enterprise Linux 5.0 and OS X 10.7) in order to provide compatibility with a wide range of OS versions. These precompiled packages are made available on the <a href="https://github.com/mpertea/stringtie2/releases">Releases</a> page for this repository.
+### Using pre-compiled (binary) releases
+Instead of compiling from source, some users may prefer to download an already compiled binary for Linux and Apple OS X, ready to run. These binary package releases are compiled on older versions of these operating systems (RedHat Enterprise Linux 5.0 and OS X 10.7) in order to provide compatibility with a wide range of (older) OS versions, not just the most recent versions. These precompiled packages are made available on the <a href="https://github.com/mpertea/stringtie2/releases">Releases</a> page for this repository.
 
 ## Running StringTie
 
@@ -35,15 +35,22 @@ sorted by genomic location (for example the accepted_hits.bam file produced
 by TopHat).
 
 ### Running StringTie on test data
-After building the program with `make release` as instructed above, the current binary
-can be tested on a small data set with a command like this:
+When building from this source repository, after the program was compiled with `make release` as instructed above, the generated binary can be tested on a small data set with a command like this:
 ```
 make test
 ```
 This will run the included `run_tests.sh` script which downloads a small test data set 
-and runs a few simple tests to ensure that the program works as expected. 
+and runs a few simple tests to ensure that the program works and generates the expected output.
 
-These test/demo data sets can also be downloaded as <a href="https://github.com/mpertea/stringtie2/releases/download/v2.0/test_data.tar.gz>test_data.tar.gz</a> along with the source package and precompiled packages on the <a href="https://github.com/mpertea/stringtie2/releases">Releases</a> page for this repository.
+If a pre-compiled package is used instead of compiling the program from source, the `run_tests.sh` script is included in the binary package as well and it can be run immediately after unpacking the binary package:
+
+```
+tar -xvzf stringtie-2.0.Linux_x86_64.tar.gz
+cd stringtie-2.0.Linux_x86_64
+./run_tests.sh
+```
+  
+These small test/demo data sets can also be downloaded separately as <a href="https://github.com/mpertea/stringtie2/releases/download/v2.0/test_data.tar.gz>test_data.tar.gz</a> along with the source package and pre-compiled packages on the <a href="https://github.com/mpertea/stringtie2/releases">Releases</a> page for this repository.
 
 The tests can also be run manually as shown below (after changing to the _test_data_ directory, `cd test_data`):
 
