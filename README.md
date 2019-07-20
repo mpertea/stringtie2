@@ -1,9 +1,9 @@
 ## Obtaining and installing StringTie
 
-Source and binary packages for the program, along with a small test data set can be directly downloaded from the <a href="https://github.com/mpertea/stringtie2/releases">Releases</a> page for this repository/
+Source and binary packages for this software, along with a small test data set can be directly downloaded from the <a href="https://github.com/mpertea/stringtie2/releases">Releases</a> page for this repository. StringTie is compatible with a wide range of Linux and Apple OS systems (going as far back as RedHat Enterprise Linux 5.0 and OS X 10.7). The main program (StringTie) does not have any other library dependencies and in order to compile it from source it requires only a C++ compiler which supports the C++ 0x standard (GCC 4.5 or newer).
 
 ### Building the latest version from the repository 
-In order to build StringTie from the source made available in this GitHub repository the following steps can be taken:
+In order to compile the StringTie source in this GitHub repository the following steps can be taken:
  
 ```
 git clone https://github.com/mpertea/stringtie2
