@@ -34,7 +34,9 @@ The main input of the program is a SAMTools BAM file with RNA-Seq mappings
 sorted by genomic location (for example the accepted_hits.bam file produced
 by TopHat).
 
-### Running StringTie on test data
+The main output of the program is a GTF file containing the structural definitions of the transcripts assembled by StringTie from the read alignment data. The name of the output file should be specified by with the `-o` option.
+
+### Running StringTie on the provided test/demo data
 When building from this source repository, after the program was compiled with `make release` as instructed above, the generated binary can be tested on a small data set with a command like this:
 ```
 make test
@@ -49,7 +51,7 @@ tar -xvzf stringtie-2.0.Linux_x86_64.tar.gz
 cd stringtie-2.0.Linux_x86_64
 ./run_tests.sh
 ```
-  
+
 These small test/demo data sets can also be downloaded separately as <a href="https://github.com/mpertea/stringtie2/releases/download/v2.0/test_data.tar.gz>test_data.tar.gz</a> along with the source package and pre-compiled packages on the <a href="https://github.com/mpertea/stringtie2/releases">Releases</a> page for this repository.
 
 The tests can also be run manually as shown below (after changing to the _test_data_ directory, `cd test_data`):
@@ -76,6 +78,9 @@ stringtie -L -G human-chr19_P.gff -o long_reads_guided.out.gtf long_reads.bam
 
 The above runs should take around one second each on a regular Linux or MacOS desktop. 
 (see also <a href="https://github.com/mpertea/stringtie2/blob/master/test_data/README.md">test_data/README.md</a> info).
+
+For very large data sets one can expect up to one hour of processing time. A minimum of 8GB of RAM is recommended for running StringTie on regular size RNA-Seq samples, with 16 GB or more being required for larger data sets.
+
 
 ### StringTie options
 
