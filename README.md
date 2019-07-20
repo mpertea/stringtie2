@@ -60,7 +60,7 @@ stringtie -L -G human-chr19_P.gff -o long_reads_guided.out.gtf long_reads.bam
 ```
 
 The above runs should take around one second each on a regular Linux or MacOS desktop. 
-(see also <a href="https://github.com/mpertea/stringtie2/blob/master/test_data/README.md">test data</a> info).
+(see also <a href="https://github.com/mpertea/stringtie2/blob/master/test_data/README.md">test_data/README.md</a> info).
 
 ### StringTie options
 
@@ -157,7 +157,7 @@ printed as well ("novel" transcripts).
 This optional module can be used to de-novo assemble, align and pre-process
 RNA-Seq reads, preparing them to be used as "super-reads" by Stringtie.
 
-Mode detailed information is provided in the SuperReads_RNA/README.md 
+Mode detailed information is provided in the <a href="https://github.com/mpertea/stringtie2/blob/master/SuperReads_RNA/README.md">SuperReads_RNA/README.md</a>.
 Quick installation instructions for this module (assuming the above Stringtie installation 
 was completed):
 
