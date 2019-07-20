@@ -77,7 +77,7 @@ stringtie -L -G human-chr19_P.gff -o long_reads_guided.out.gtf long_reads.bam
 ```
 
 The above runs should take around one second each on a regular Linux or MacOS desktop. 
-(see also <a href="https://github.com/mpertea/stringtie2/blob/master/test_data/README.md">test_data/README.md</a> info).
+(see also <a href="https://github.com/mpertea/stringtie2/blob/master/test_data/README.md">test_data/README.md</a>).
 
 For very large data sets one can expect up to one hour of processing time. A minimum of 8GB of RAM is recommended for running StringTie on regular size RNA-Seq samples, with 16 GB or more being strongly advised for larger data sets.
 
@@ -178,8 +178,7 @@ This optional module can be used to de-novo assemble, align and pre-process
 RNA-Seq reads, preparing them to be used as "super-reads" by Stringtie.
 
 Mode detailed information is provided in the <a href="https://github.com/mpertea/stringtie2/blob/master/SuperReads_RNA/README.md">SuperReads_RNA/README.md</a>.
-Quick installation instructions for this module (assuming the above Stringtie installation 
-was completed):
+Quick installation instructions for this module from the source available on this repository (assuming the above Stringtie installation was completed):
 
 ```
  cd SuperReads_RNA
@@ -188,10 +187,10 @@ was completed):
 
 ### Using super-reads with Stringtie
 
-After running the super-reads module (see the SuperRead_RNA/README.md file for usage details), there 
+After running the super-reads module (see the <a href="https://github.com/mpertea/stringtie2/blob/master/SuperReads_RNA/README.md">SuperReads_RNA</a> module documentation for usage details), there 
 is a BAM file which contains sorted alignment for both short reads and super-reads, called *`sr_merge.bam`*, 
 created in the selected output directory. This file can be directly given as the main input file
-to StringTie as described in the _Running Stringtie_ section above.
+to StringTie as described in the [Running StringTie](#running-stringtie) section above.
 
 
 ## License
