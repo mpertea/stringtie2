@@ -16,7 +16,7 @@ BINDIR=$DEST/bin
 LIBDIR=$DEST/lib
 export PKG_CONFIG_PATH=$LIBDIR/pkgconfig:$PKG_CONFIG_PATH
 cd global-1
-autoreconf -vfis
+autoreconf -fis
 ./configure --prefix=$DEST --bindir=$BINDIR --libdir=$LIBDIR && make -j $NUM_THREADS install-special
 cd ..
 perl -pe 's{^BIN_DIR = #__#}{BIN_DIR = "'$BINDIR'"}' global-1/SuperReadsR/create_rna_sr.py > $DEST/create_rna_sr.py
