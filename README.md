@@ -1,6 +1,7 @@
 ## Obtaining and installing StringTie
 
-Source and binary packages for this software, along with a small test data set can be directly downloaded from the <a href="https://github.com/mpertea/stringtie2/releases">Releases</a> page for this repository. StringTie is compatible with a wide range of Linux and Apple OS systems (going as far back as RedHat Enterprise Linux 5.0 and OS X 10.7). The main program (StringTie) does not have any other library dependencies and in order to compile it from source it requires only a C++ compiler which supports the C++ 0x standard (GCC 4.5 or newer).
+Source and binary packages for this software, along with a small test data set 
+can be directly downloaded from the <a href="https://github.com/mpertea/stringtie2/releases">Releases</a> page for this repository. StringTie is compatible with a wide range of Linux and Apple OS systems (going as far back as RedHat Enterprise Linux 5.0 and OS X 10.7). The main program (StringTie) does not have any other library dependencies and in order to compile it from source it requires only a C++ compiler which supports the C++ 0x standard (GCC 4.5 or newer).
 
 ### Building the latest version from the repository 
 In order to compile the StringTie source in this GitHub repository the following steps can be taken:
@@ -22,7 +23,14 @@ and runtime checking but which can be significantly slower than the optimized ve
 is obtained by using `make release` as instructed above.
 
 ### Using pre-compiled (binary) releases
-Instead of compiling from source, some users may prefer to download an already compiled binary for Linux and Apple OS X, ready to run. These binary package releases are compiled on older versions of these operating systems (RedHat Enterprise Linux 5.0 and OS X 10.7) in order to provide compatibility with a wide range of (older) OS versions, not just the most recent versions. These precompiled packages are made available on the <a href="https://github.com/mpertea/stringtie2/releases">Releases</a> page for this repository.
+Instead of compiling from source, some users may prefer to download an already compiled binary for Linux 
+and Apple OS X, ready to run. These binary package releases are compiled on older versions of these 
+operating systems (RedHat Enterprise Linux 5.0 and OS X 10.7) in order to provide compatibility with 
+a wide range of (older) OS versions, not just the most recent versions. These precompiled packages are 
+made available on the <a href="https://github.com/mpertea/stringtie2/releases">Releases</a> page for this repository.
+Please note that these binary packages do not include the optional [super-reads module](#the-super-reads-module), 
+which currently can only be built on Linux machines, from the source made available in this repository.
+
 
 ## Running StringTie
 
@@ -172,7 +180,7 @@ _`reference_id`_ GTF attribute in the output file . Other transcripts assembled 
 the input alignment data by StringTie and not present in the reference file will be 
 printed as well ("novel" transcripts).
 
-## Installation of the super-reads module (optional)
+## The super-reads module
 
 This optional module can be used to de-novo assemble, align and pre-process
 RNA-Seq reads, preparing them to be used as "super-reads" by Stringtie.
