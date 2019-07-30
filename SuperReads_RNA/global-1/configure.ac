@@ -100,12 +100,12 @@ AC_CHECK_HEADER([bzlib.h], [], [AC_MSG_FAILURE([Cannot find bzilb.h header. Inst
 AC_CHECK_LIB([bz2], [BZ2_bzlibVersion], [], [AC_MSG_FAILURE([Cannot find bzip2 library. Install bzip2 library])])
 
 
-# Use valgrind to check memory allocation with mmap
-AC_ARG_ENABLE([valgrind],
-              [AS_HELP_STRING([--enable-valgrind], [Instrument mmap memory allocation with valgrind])])
-AS_IF([test "x$enable_valgrind" = xyes],
-      [AC_DEFINE([HAVE_VALGRIND], [1], [Define is using Valgrind])]
-      [PKG_CHECK_MODULES([VALGRIND], [valgrind >= 1.8.0])])
+## Use valgrind to check memory allocation with mmap
+#AC_ARG_ENABLE([valgrind],
+#              [AS_HELP_STRING([--enable-valgrind], [Instrument mmap memory allocation with valgrind])])
+#AS_IF([test "x$enable_valgrind" = xyes],
+#      [AC_DEFINE([HAVE_VALGRIND], [1], [Define is using Valgrind])]
+#      [PKG_CHECK_MODULES([VALGRIND], [valgrind >= 1.8.0])])
 
 # Check for builtin functions
 AC_MSG_CHECKING([for __builtin_prefetch])

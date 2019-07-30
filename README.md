@@ -185,8 +185,10 @@ printed as well ("novel" transcripts).
 This optional module can be used to de-novo assemble, align and pre-process
 RNA-Seq reads, preparing them to be used as "super-reads" by Stringtie.
 
-Mode detailed information is provided in the <a href="https://github.com/mpertea/stringtie2/blob/master/SuperReads_RNA/README.md">SuperReads_RNA/README.md</a>.
-Quick installation instructions for this module from the source available on this repository (assuming the above Stringtie installation was completed):
+Mode detailed information is provided in the 
+<a href="https://github.com/mpertea/stringtie2/blob/master/SuperReads_RNA/README.md">SuperReads_RNA/README.md</a>.
+Quick installation instructions for this module from the source available on this repository 
+(assuming the above Stringtie installation was completed):
 
 ```
  cd SuperReads_RNA
