@@ -1,17 +1,24 @@
 AC_INIT([global], [1], [gmarcais@umd.edu])
 AC_CANONICAL_HOST
+AC_CONFIG_AUX_DIR([.])
 AC_CONFIG_MACRO_DIR([m4])
 AM_INIT_AUTOMAKE([subdir-objects foreign parallel-tests color-tests])
 AM_SILENT_RULES([yes])
 AC_CONFIG_SRCDIR([.])
 AC_CONFIG_HEADERS([config.h])
-AC_PROG_LIBTOOL
 
 # Change default compilation flags
 AS_IF([test -z "$CXXFLAGS"], [cxxflags_given=no], [cxxflags_given=yes])
 AC_LANG(C++)
 AC_PROG_CC
 AC_PROG_CXX
+
+#
+LT_PREREQ
+LT_INIT
+
+#
+#AC_PROG_LIBTOOL
 
 # Checks for libraries.
 CXXFLAGS="-std=c++0x $CXXFLAGS"
