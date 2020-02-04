@@ -1,9 +1,11 @@
 ## Obtaining and installing StringTie
 
-Source and binary packages for this software, along with a small test data set 
-can be directly downloaded from the <a href="https://github.com/mpertea/stringtie2/releases">Releases</a> page for this repository. StringTie is compatible with a wide range of Linux and Apple OS systems (going as far back as RedHat Enterprise Linux 5.0 and OS X 10.7). The main program (StringTie) does not have any other library dependencies and in order to compile it from source it requires only a C++ compiler which supports the C++ 0x standard (GCC 4.5 or newer).
+**Please note that this repository is no longer updated.** For the latest version of this software, which includes updates, fixes and new features please use the main StringTie development repository: https://github.com/gpertea/stringtie 
 
-### Building the latest version from the repository 
+Source and binary packages for the initial version of this software, along with a small test data set 
+can be directly downloaded from the <a href="https://github.com/mpertea/stringtie2/releases">Releases</a> page for this repository. **For the latest version and updates please use: https://github.com/gpertea/stringtie/releases** instead. <br> StringTie is compatible with a wide range of Linux and Apple OS systems (going as far back as RedHat Enterprise Linux 5.0 and OS X 10.7). The main program (StringTie) does not have any other library dependencies and in order to compile it from source it requires only a C++ compiler which supports the C++ 0x standard (GCC 4.5 or newer).
+
+### Building the initial version from the repository 
 In order to compile the StringTie source in this GitHub repository the following steps can be taken:
  
 ```
@@ -11,6 +13,7 @@ git clone https://github.com/mpertea/stringtie2
 cd stringtie2
 make release
 ```
+**Note:** for the latest updates please use http://github.com/gpertea/stringtie instead.
 
 If the compilation is successful, the resulting `stringtie` binary can then be copied to 
 a programs directory of choice.
